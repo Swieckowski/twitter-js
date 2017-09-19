@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs')
+const fs = require('fs');
+const parser = require('body-parser');
 // could use one line instead: const router = require('express').Router();
 const tweetBank = require('../tweetBank');
 
@@ -14,15 +15,31 @@ const tweetBank = require('../tweetBank');
 // 		next();
 // 	}
 // })
+router.use(parser.urlencoded({ extended: false }))
+
+router.post('/tweets', function(req,res){
+	var name = req.body.name;
+	var text = req.body.text;
+	tweetBank.add(name, text);
+ 	res.redirect('/');
+});
 
 router.get('/', function (req, res) {
   let tweets = tweetBank.list();
-  res.render( 'index', {  tweets: tweets } );
+  res.render( 'index', {  tweets: tweets, showForm: true }  );
+
 });
 
 router.get('/users/:name', function(req, res) {
   var name = req.params.name;
   var tweets = tweetBank.find( {name: name} );
+  res.render( 'index', { tweets: tweets, preFill: true, name: name } );
+});
+
+router.get('/tweets/:id', function(req, res) {
+	console.log(req.params.id)
+  var id = req.params.id;
+  var tweets = tweetBank.find( {id: id} );
   res.render( 'index', { tweets: tweets } );
 });
 

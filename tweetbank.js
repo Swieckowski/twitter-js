@@ -1,9 +1,11 @@
 const _ = require('lodash');
 let data = [];
-module.exports = { add: add, list: list, find: find };
+let count = 0;
+module.exports = { add: add, list: list, find: find};
 
 function add (name, content) {
-  data.push({ name: name, content: content });
+	count++;
+	data.push({ name: name, content: content, id: count.toString() });
 }
 
 function list () {
