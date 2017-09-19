@@ -1,5 +1,6 @@
 const express = require('express');
 const nunjucks = require('nunjucks');
+const routes = require('./routes');
 const app = express();
 
 var locals = {
@@ -26,10 +27,4 @@ app.use(function(request,response, next){
 	next();
 });
 
-app.get('/', function(request,response){
-	response.render('index', locals);
-});
-
-app.get('/news', function(request,response){
-	response.send("Same ol', same ol'");
-});
+app.use('/', routes);
