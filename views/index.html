@@ -15,7 +15,18 @@
     
       <!-- display tweets here -->
       {% for tweet in tweets %}
-        <li>{{tweet.content}}</li>
+      <div class="col-md-12">
+      <div class="col-md-2">
+      	pic goes here
+      </div>
+      <div class="col-md-10">
+      	<p>{{tweet.name}}<br>
+        {{tweet.content}}
+        <p>
+      </div>
+      <br>
+      </div>
+      	
       {% endfor %}
       
     </div>
