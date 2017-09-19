@@ -15,10 +15,10 @@ const tweetBank = require('../tweetBank');
 // 		next();
 // 	}
 // })
-router.use(parser.urlencoded({ extended: false }))
+router.use(parser.urlencoded({ extended: true }))
 
 router.post('/tweets', function(req,res){
-	var name = req.body.name;
+	var name = req.body.username;
 	var text = req.body.text;
 	tweetBank.add(name, text);
  	res.redirect('/');
@@ -33,7 +33,7 @@ router.get('/', function (req, res) {
 router.get('/users/:name', function(req, res) {
   var name = req.params.name;
   var tweets = tweetBank.find( {name: name} );
-  res.render( 'index', { tweets: tweets, preFill: true, name: name } );
+  res.render( 'index', { tweets: tweets, showForm: true, name: name } );
 });
 
 router.get('/tweets/:id', function(req, res) {

@@ -3,14 +3,7 @@ const nunjucks = require('nunjucks');
 const routes = require('./routes');
 const app = express();
 
-var locals = {
-	title: "This is my title.",
-	people : [
-	{name: "Arthur"},
-	{name: "Philip"},
-	{name: "Dinkins"}
-	]
-};
+
 app.set('view engine', 'html');
 // have res.render work with html files
 app.engine('html', nunjucks.render); 
