@@ -3,44 +3,57 @@ const router = express.Router();
 const fs = require('fs');
 const parser = require('body-parser');
 // could use one line instead: const router = require('express').Router();
-const tweetBank = require('../tweetBank');
+// const tweetBank = require('../tweetBank');
+const client = require('../db');
 
-// router.use(function(req, res, next){
-// 	if(req.path === ''||req.path === '/'){
-// 		next();
-// 	}
-// 	if(fs.existsSync('/Users/arthurswieckowski/desktop/twitter-js/public'+req.path)){
-// 		res.sendFile('/Users/arthurswieckowski/desktop/twitter-js/public'+req.path);
-// 	} else{
-// 		next();
-// 	}
-// })
+// function list(){
+//   client.query('SELECT * FROM tweets inner join users on users.id = tweets.user_id', function (err, result) {
+//     if (err) return next(err); // pass errors to Express
+//     var tweetsArr = result.rows;
+//     console.log('list is being called')
+//     return tweetsArr
+//   });
+// }
+
+
+
 router.use(parser.urlencoded({ extended: true }))
 
 router.post('/tweets', function(req,res){
 	var name = req.body.username;
 	var text = req.body.text;
-	tweetBank.add(name, text);
+	// tweetBank.add(name, text);
  	res.redirect('/');
 });
 
 router.get('/', function (req, res) {
-  let tweets = tweetBank.list();
-  res.render( 'index', {  tweets: tweets, showForm: true }  );
-
+  // let tweets = tweetBank.list();
+  client.query('select * from users inner join tweets on tweets.user_id = users.id', function (err, result) {
+    if (err) return next(err); // pass errors to Express
+    var tweetsArr = result.rows;
+    console.log(tweetsArr);
+    res.render('index', { title: 'Twitter.js', tweets: tweetsArr, showForm: false });
+  });
 });
 
 router.get('/users/:name', function(req, res) {
   var name = req.params.name;
-  var tweets = tweetBank.find( {name: name} );
-  res.render( 'index', { tweets: tweets, showForm: true, name: name } );
+  client.query('select * from users inner join tweets on tweets.user_id = users.id WHERE users.name ='+"'"+name+"'", function (err, result) {
+    if (err) return next(err); // pass errors to Express
+    var tweetsArr = result.rows;
+    res.render('index', { title: 'Twitter.js', tweets: tweetsArr, showForm: false });
+  });
 });
 
 router.get('/tweets/:id', function(req, res) {
 	console.log(req.params.id)
   var id = req.params.id;
-  var tweets = tweetBank.find( {id: id} );
-  res.render( 'index', { tweets: tweets } );
+  client.query('select * from users inner join tweets on tweets.user_id = users.id WHERE tweets.id ='+id, function (err, result) {
+    if (err) return next(err); // pass errors to Express
+    var tweetsArr = result.rows;
+    console.log(tweetsArr);
+    res.render('index', { title: 'Twitter.js', tweets: tweetsArr, showForm: false });
+  });
 });
 
 router.use(express.static('public'));
